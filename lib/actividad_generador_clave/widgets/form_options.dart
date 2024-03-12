@@ -99,7 +99,7 @@ class _FormOptionsState extends State<FormOptions> {
       controller: _lengthController,
       keyboardType: TextInputType.number,
       textAlign: TextAlign.center,
-      onTapOutside: (event) {
+      onEditingComplete: () {
         if (_lengthController.text.isEmpty) return;
 
         setState(() {
