@@ -17,7 +17,7 @@ class PasswordView extends StatelessWidget {
     return Container(
       width: width * 0.8,
       height: 80,
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         color: Colors.white,
         border: BorderDirectional(
@@ -28,11 +28,11 @@ class PasswordView extends StatelessWidget {
             bottomRight: Radius.circular(5)),
       ),
       child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(currentPassword,
-                style: const TextStyle(fontSize: 20, color: Colors.black),
+                style: const TextStyle(fontSize: 15, color: Colors.black),
                 textAlign: TextAlign.left),
             _buttonGroup()
           ]),

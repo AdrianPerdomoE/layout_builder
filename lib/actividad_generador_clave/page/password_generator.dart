@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:layout_builder/actividad_generador_clave/widgets/password_view.dart';
 
@@ -49,12 +51,36 @@ class _PasswordGeneratorState extends State<PasswordGenerator> {
 
   _updateOptions(PasswordOptions newOptions) {
     setState(() {
-      passwordOptions = newOptions;
+      if (!newOptions.uppercase &&
+          !newOptions.lowercase &&
+          !newOptions.numbers &&
+          !newOptions.symbols) {
+        newOptions.uppercase = true;
+      }
+
       _generatePassword();
     });
   }
 
   _generatePassword() {
-    return "aBcD1234";
+    String password = '';
+    String characters = '';
+    if (passwordOptions.uppercase) {
+      characters += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    }
+    if (passwordOptions.lowercase) {
+      characters += 'abcdefghijklmnopqrstuvwxyz';
+    }
+    if (passwordOptions.numbers) {
+      characters += '0123456789';
+    }
+    if (passwordOptions.symbols) {
+      characters += '!@#%^&*()_+';
+    }
+
+    for (int i = 0; i < passwordOptions.length; i++) {
+      password += characters[Random().nextInt(characters.length)];
+    }
+    return password;
   }
 }

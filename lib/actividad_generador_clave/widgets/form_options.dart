@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../models/password_options.dart';
 
+enum RadioValue { all, simple }
+
 class FormOptions extends StatefulWidget {
   final PasswordOptions passwordOptions;
   Function(PasswordOptions) onOptionsChanged;
@@ -18,6 +20,7 @@ class _FormOptionsState extends State<FormOptions> {
   late double width;
   late int length;
   late TextEditingController _lengthController;
+  RadioValue _radioValue = RadioValue.all;
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
@@ -43,7 +46,18 @@ class _FormOptionsState extends State<FormOptions> {
           ]),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: [_formTitle(), _formLengthOption()],
+        children: [
+          _formTitle(),
+          _formLengthOption(),
+          const SizedBox(
+            height: 20,
+          ),
+          _radialButtonsGroup(),
+          const SizedBox(
+            height: 20,
+          ),
+          _passwordOptionsBoxGroup()
+        ],
       ),
     );
   }
@@ -68,13 +82,16 @@ class _FormOptionsState extends State<FormOptions> {
   }
 
   Widget _formLengthOption() {
-    return Row(children: [
-      SizedBox(
-        width: width * 0.1,
-        child: _lengthInput(),
-      ),
-      SizedBox(width: width * 0.5, child: _slider())
-    ]);
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: width * 0.1,
+            child: _lengthInput(),
+          ),
+          SizedBox(width: width * 0.5, child: _slider())
+        ]);
   }
 
   Widget _lengthInput() {
@@ -86,10 +103,14 @@ class _FormOptionsState extends State<FormOptions> {
         if (_lengthController.text.isEmpty) return;
 
         setState(() {
-          if (int.parse(_lengthController.text) < 1)
+          if (int.parse(_lengthController.text) < 1) {
             _lengthController.text = "1";
-          if (int.parse(_lengthController.text) > 51)
-            _lengthController.text = "51";
+          }
+
+          if (int.parse(_lengthController.text) > 17) {
+            _lengthController.text = "17";
+          }
+
           // default value (8 characters
           length = int.parse(_lengthController.text);
           widget.passwordOptions.length = length;
@@ -102,7 +123,7 @@ class _FormOptionsState extends State<FormOptions> {
   _slider() {
     return Slider(
       min: 1,
-      max: 51,
+      max: 17,
       value: length.toDouble(),
       activeColor: Colors.red.shade800,
       onChanged: (value) {
@@ -114,5 +135,101 @@ class _FormOptionsState extends State<FormOptions> {
         });
       },
     );
+  }
+
+  _radialButtonsGroup() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Column(
+          children: [
+            const Text('all'),
+            Radio(
+              value: RadioValue.all,
+              groupValue: _radioValue,
+              onChanged: (value) {
+                setState(() {
+                  _radioValue = value!;
+                });
+              },
+            ),
+          ],
+        ),
+        Column(
+          children: [
+            const Text('simple'),
+            Radio(
+              value: RadioValue.simple,
+              groupValue: _radioValue,
+              onChanged: (value) {
+                setState(() {
+                  _radioValue = value!;
+                  widget.passwordOptions.numbers = false;
+                  widget.passwordOptions.symbols = false;
+                  widget.onOptionsChanged(widget.passwordOptions);
+                });
+              },
+            ),
+          ],
+        )
+      ],
+    );
+  }
+
+  _passwordOptionsBoxGroup() {
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _checkBoxOption(widget.passwordOptions.uppercase, (value) {
+                widget.passwordOptions.uppercase = value;
+                widget.onOptionsChanged(widget.passwordOptions);
+              }, 'Mayúsculas'),
+              _checkBoxOption(widget.passwordOptions.lowercase, (value) {
+                widget.passwordOptions.lowercase = value;
+                widget.onOptionsChanged(widget.passwordOptions);
+              }, 'Minúsculas'),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _checkBoxOption(widget.passwordOptions.symbols,
+                  _isDisabled((value) {
+                widget.passwordOptions.symbols = value;
+                widget.onOptionsChanged(widget.passwordOptions);
+              }), 'Simbolos'),
+              _checkBoxOption(widget.passwordOptions.numbers,
+                  _isDisabled((value) {
+                widget.passwordOptions.numbers = value;
+                widget.onOptionsChanged(widget.passwordOptions);
+              }), 'Números'),
+            ],
+          )
+        ]);
+  }
+
+  _checkBoxOption(bool value, Function? onChangedFunction, String name) {
+    return Column(
+      children: [
+        Text(name),
+        Checkbox(
+          value: value,
+          onChanged: onChangedFunction == null
+              ? null
+              : (value) => onChangedFunction(value),
+        ),
+      ],
+    );
+  }
+
+  _isDisabled(Function function) {
+    if (_radioValue == RadioValue.simple) {
+      return null;
+    }
+    return function;
   }
 }
