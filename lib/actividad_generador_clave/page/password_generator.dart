@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:layout_builder/actividad_generador_clave/widgets/password_view.dart';
 
+import '../models/password_options.dart';
 import '../widgets/form_options.dart';
 
 class PasswordGenerator extends StatefulWidget {
@@ -13,13 +14,13 @@ class PasswordGenerator extends StatefulWidget {
 class _PasswordGeneratorState extends State<PasswordGenerator> {
   late double width;
   late String currentPassword;
-  Map<String, dynamic> passwordOptions = {
-    "length": 8,
-    "uppercase": true,
-    "lowercase": true,
-    "numbers": true,
-    "symbols": false
-  };
+  PasswordOptions passwordOptions = PasswordOptions(
+    length: 8,
+    uppercase: true,
+    lowercase: true,
+    numbers: true,
+    symbols: true,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +47,7 @@ class _PasswordGeneratorState extends State<PasswordGenerator> {
     );
   }
 
-  _updateOptions(Map<String, dynamic> newOptions) {
+  _updateOptions(PasswordOptions newOptions) {
     setState(() {
       passwordOptions = newOptions;
       _generatePassword();

@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../models/password_options.dart';
+
 class FormOptions extends StatefulWidget {
-  final Map<String, dynamic> passwordOptions;
-  Function(Map<String, dynamic>) onOptionsChanged;
-  late TextEditingController _lengthController ;
+  final PasswordOptions passwordOptions;
+  Function(PasswordOptions) onOptionsChanged;
   FormOptions(
       {super.key,
       required this.passwordOptions,
-      required this.onOptionsChanged}){
-        int length = passwordOptions['length'];
-        _lengthController = TextEditingController(text: length.toString());
-      }
+      required this.onOptionsChanged});
 
   @override
   State<FormOptions> createState() => _FormOptionsState();
@@ -19,11 +17,12 @@ class FormOptions extends StatefulWidget {
 class _FormOptionsState extends State<FormOptions> {
   late double width;
   late int length;
+  late TextEditingController _lengthController;
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
-    length = widget.passwordOptions["length"];
-    
+    length = widget.passwordOptions.length;
+    _lengthController = TextEditingController(text: length.toString());
     return _formOptions();
   }
 
@@ -80,22 +79,22 @@ class _FormOptionsState extends State<FormOptions> {
 
   Widget _lengthInput() {
     return TextFormField(
-      controller:,
+      controller: _lengthController,
       keyboardType: TextInputType.number,
       textAlign: TextAlign.center,
       onTapOutside: (event) {
-        String = 
-        (value) {
-          if (value.isEmpty) return;
-          if (int.parse(value) < 1) value = "1";
-          if (int.parse(value) > 51) value = "51";
-          setState(() {
-            // default value (8 characters
-            length = int.parse(value);
-            widget.passwordOptions["length"] = length;
-            widget.onOptionsChanged(widget.passwordOptions);
-          });
-        };
+        if (_lengthController.text.isEmpty) return;
+
+        setState(() {
+          if (int.parse(_lengthController.text) < 1)
+            _lengthController.text = "1";
+          if (int.parse(_lengthController.text) > 51)
+            _lengthController.text = "51";
+          // default value (8 characters
+          length = int.parse(_lengthController.text);
+          widget.passwordOptions.length = length;
+          widget.onOptionsChanged(widget.passwordOptions);
+        });
       },
     );
   }
@@ -109,7 +108,8 @@ class _FormOptionsState extends State<FormOptions> {
       onChanged: (value) {
         setState(() {
           length = value.toInt();
-          widget.passwordOptions["length"] = length;
+          widget.passwordOptions.length = length;
+          _lengthController.text = length.toString();
           widget.onOptionsChanged(widget.passwordOptions);
         });
       },
