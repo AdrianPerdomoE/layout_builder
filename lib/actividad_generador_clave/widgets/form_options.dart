@@ -17,12 +17,15 @@ class FormOptions extends StatefulWidget {
 }
 
 class _FormOptionsState extends State<FormOptions> {
+  int maxLength = 17;
+  late int minLenght;
   late double width;
   late int length;
   late TextEditingController _lengthController;
   RadioValue _radioValue = RadioValue.all;
   @override
   Widget build(BuildContext context) {
+    minLenght = widget.passwordOptions.minLength;
     width = MediaQuery.of(context).size.width;
     length = widget.passwordOptions.length;
     _lengthController = TextEditingController(text: length.toString());
@@ -103,12 +106,12 @@ class _FormOptionsState extends State<FormOptions> {
         if (_lengthController.text.isEmpty) return;
 
         setState(() {
-          if (int.parse(_lengthController.text) < 1) {
-            _lengthController.text = "1";
+          if (int.parse(_lengthController.text) < minLenght) {
+            _lengthController.text = minLenght.toString();
           }
 
-          if (int.parse(_lengthController.text) > 17) {
-            _lengthController.text = "17";
+          if (int.parse(_lengthController.text) > maxLength) {
+            _lengthController.text = maxLength.toString();
           }
 
           // default value (8 characters
@@ -122,8 +125,8 @@ class _FormOptionsState extends State<FormOptions> {
 
   _slider() {
     return Slider(
-      min: 1,
-      max: 17,
+      min: minLenght.toDouble(),
+      max: maxLength.toDouble(),
       value: length.toDouble(),
       activeColor: Colors.red.shade800,
       onChanged: (value) {

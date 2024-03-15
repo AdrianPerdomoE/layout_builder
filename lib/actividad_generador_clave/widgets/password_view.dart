@@ -31,9 +31,11 @@ class PasswordView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(currentPassword,
-                style: const TextStyle(fontSize: 15, color: Colors.black),
-                textAlign: TextAlign.left),
+            Expanded(
+              child: Text(currentPassword,
+                  style: const TextStyle(fontSize: 15, color: Colors.black),
+                  textAlign: TextAlign.left),
+            ),
             _buttonGroup()
           ]),
     );

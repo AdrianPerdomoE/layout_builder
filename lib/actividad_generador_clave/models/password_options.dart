@@ -4,6 +4,7 @@ class PasswordOptions {
   bool lowercase;
   bool numbers;
   bool symbols;
+  int minLength;
 
   PasswordOptions({
     required this.length,
@@ -11,5 +12,6 @@ class PasswordOptions {
     required this.lowercase,
     required this.numbers,
     required this.symbols,
+    required this.minLength,
   });
 }

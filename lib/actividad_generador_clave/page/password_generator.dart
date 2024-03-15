@@ -22,6 +22,7 @@ class _PasswordGeneratorState extends State<PasswordGenerator> {
     lowercase: true,
     numbers: true,
     symbols: true,
+    minLength: 4,
   );
 
   @override
@@ -63,22 +64,38 @@ class _PasswordGeneratorState extends State<PasswordGenerator> {
   }
 
   _generatePassword() {
+    int counter = 0;
     String password = '';
     String characters = '';
     if (passwordOptions.uppercase) {
-      characters += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      String upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      characters += upper;
+      counter++;
+      password += upper[Random().nextInt(upper.length)];
     }
     if (passwordOptions.lowercase) {
-      characters += 'abcdefghijklmnopqrstuvwxyz';
+      String lower = 'abcdefghijklmnopqrstuvwxyz';
+      characters += lower;
+      password += lower[Random().nextInt(lower.length)];
+      counter++;
     }
     if (passwordOptions.numbers) {
-      characters += '0123456789';
+      String numbers = '0123456789';
+      characters += numbers;
+      password += numbers[Random().nextInt(numbers.length)];
+      counter++;
     }
     if (passwordOptions.symbols) {
-      characters += '!@#%^&*()_+';
+      String symbols = '!@#%^&*()_+';
+      characters += symbols;
+      password += symbols[Random().nextInt(symbols.length)];
+      counter++;
     }
-
-    for (int i = 0; i < passwordOptions.length; i++) {
+    passwordOptions.minLength = counter;
+    if (passwordOptions.length < passwordOptions.minLength) {
+      passwordOptions.length = passwordOptions.minLength;
+    }
+    for (int i = 0; i < passwordOptions.length - counter; i++) {
       password += characters[Random().nextInt(characters.length)];
     }
     return password;
